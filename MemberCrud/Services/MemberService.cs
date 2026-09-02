@@ -1,5 +1,6 @@
 ﻿using MemberCrud.Data;
 using MemberCrud.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,7 +16,7 @@ namespace MemberCrud.Services;
 /// database logic. Forms can call these methods without needing to know
 /// how the data is stored or retrieved.
 /// </summary>
-public class MemberService
+public class MemberService : IMemberService
 {
     private readonly System.Func<MemberCrudDbContext> _contextFactory;
 
@@ -68,6 +69,7 @@ public class MemberService
     /// </remarks>
     public void AddMember(Member member)
     {
+        if (member is null) throw new ArgumentNullException(nameof(member));
         // Creates a database context for this operation.
         using MemberCrudDbContext db = _contextFactory();
 
@@ -92,6 +94,7 @@ public class MemberService
     /// </remarks>
     public void DeleteMember(Member member)
     {
+        if (member is null) throw new ArgumentNullException(nameof(member));
         // Creates a database context for this operation.
         using MemberCrudDbContext db = _contextFactory();
 
@@ -104,6 +107,7 @@ public class MemberService
     }
     public void UpdateMember(Member member)
     {
+        if (member is null) throw new ArgumentNullException(nameof(member));
         // Creates a database context for this operation.
         using MemberCrudDbContext db = _contextFactory();
         // Marks the selected member as a record that should

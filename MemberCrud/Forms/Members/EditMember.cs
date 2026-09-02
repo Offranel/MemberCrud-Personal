@@ -34,7 +34,7 @@ namespace MemberCrud
         /// before sending it to MemberService.
         /// </summary>
 
-        private readonly Member _member;
+        private readonly Member _member = null!;
 
         /// <summary>
         /// Service used to update member information in the database.
@@ -44,7 +44,7 @@ namespace MemberCrud
         /// </summary>
 
 
-        private readonly MemberService _memberService = new MemberService();
+        private readonly IMemberService _memberService = null!;
         /// <summary>
         /// Initializes the Edit Member form.
         ///
@@ -56,16 +56,12 @@ namespace MemberCrud
         /// The existing member selected for editing.
         /// </param>
 
-        public EditMember(Member member)
+        // Designer constructor
+        public EditMember()
         {
             InitializeComponent();
 
-            // Save the selected member for editing.
-
-            _member = member;
-
             // Add membership status options.
-
             comboBox1.Items.Add("Active");
             comboBox1.Items.Add("Inactive");
             comboBox1.Items.Add("Pending");
@@ -127,10 +123,16 @@ namespace MemberCrud
             });
 
             // Prevent the user from selecting a future birth date.
-
             dateTimePicker1.MaxDate = DateTime.Today;
+        }
 
-            // Display the selected member information. 
+        // Runtime constructor that accepts the member to edit and the service instance
+        public EditMember(Member member, IMemberService memberService) : this()
+        {
+            _member = member;
+            _memberService = memberService ?? throw new ArgumentNullException(nameof(memberService));
+
+            // Display the selected member information.
             LoadMemberInformation();
         }
 

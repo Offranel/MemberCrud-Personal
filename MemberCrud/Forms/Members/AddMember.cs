@@ -11,10 +11,10 @@ namespace MemberCrud
     public partial class AddMember : Form
     {
         // Service used to save members to the database.
-        private readonly MemberService _memberService = new MemberService();
+        private readonly IMemberService _memberService = null!;
 
         /// <summary>
-        /// Initializes the Add Member form and its default options.
+        /// Designer constructor. Do not rely on services here.
         /// </summary>
         public AddMember()
         {
@@ -24,7 +24,6 @@ namespace MemberCrud
             SaveNewMemberBtn.Click += AddMemberButton_Click;
 
             // Connect the Cancel button to its click event.
-
             CancelMemberBtn.Click += CancelMemberBtn_Click;
 
             // Add membership status options.
@@ -96,6 +95,14 @@ namespace MemberCrud
 
             // Prevent selecting a future birth date.
             DateOfBirthDtp.MaxDate = DateTime.Today;
+        }
+
+        /// <summary>
+        /// Runtime constructor that receives the service instance.
+        /// </summary>
+        public AddMember(IMemberService memberService) : this()
+        {
+            _memberService = memberService ?? throw new ArgumentNullException(nameof(memberService));
         }
 
         /// <summary>

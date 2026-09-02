@@ -21,7 +21,7 @@ namespace MemberCrud.UnitTests
                 City = "y",
                 PostalCode = "z",
                 DateOfBirth = new DateOnly(1990,1,1),
-                CreatedAt = System.DateTime.UtcNow
+                CreateAt = System.DateTime.UtcNow
             };
 
             // Act

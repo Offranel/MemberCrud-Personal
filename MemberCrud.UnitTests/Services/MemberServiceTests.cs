@@ -32,7 +32,7 @@ namespace MemberCrud.UnitTests.Services
                 City = "Testville",
                 PostalCode = "12345",
                 DateOfBirth = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
-                CreatedAt = DateTime.UtcNow
+                CreateAt = DateTime.UtcNow
             };
 
             service.AddMember(member);
@@ -63,7 +63,7 @@ namespace MemberCrud.UnitTests.Services
                 City = "Testville",
                 PostalCode = "54321",
                 DateOfBirth = DateOnly.FromDateTime(DateTime.Today.AddYears(-25)),
-                CreatedAt = DateTime.UtcNow
+                CreateAt = DateTime.UtcNow
             };
 
             service.AddMember(member);
@@ -98,7 +98,7 @@ namespace MemberCrud.UnitTests.Services
                 City = "Testville",
                 PostalCode = "00000",
                 DateOfBirth = DateOnly.FromDateTime(DateTime.Today.AddYears(-40)),
-                CreatedAt = DateTime.UtcNow
+                CreateAt = DateTime.UtcNow
             };
 
             service.AddMember(member);
@@ -114,6 +114,51 @@ namespace MemberCrud.UnitTests.Services
             // MemberService directly because the methods instantiate MemberCrudDbContext
             // internally and cannot be substituted with a test double.
             Assert.IsTrue(DateTime.UtcNow != default);
+        }
+
+        [TestMethod]
+        public void AddMember_Null_ThrowsArgumentNullException()
+        {
+            var service = new MemberService(() => new MemberCrudDbContext(new DbContextOptionsBuilder<MemberCrudDbContext>().UseInMemoryDatabase("test").Options));
+            try
+            {
+                service.AddMember(null!);
+                Assert.Fail("Expected ArgumentNullException");
+            }
+            catch (ArgumentNullException)
+            {
+                // Expected
+            }
+        }
+
+        [TestMethod]
+        public void UpdateMember_Null_ThrowsArgumentNullException()
+        {
+            var service = new MemberService(() => new MemberCrudDbContext(new DbContextOptionsBuilder<MemberCrudDbContext>().UseInMemoryDatabase("test").Options));
+            try
+            {
+                service.UpdateMember(null!);
+                Assert.Fail("Expected ArgumentNullException");
+            }
+            catch (ArgumentNullException)
+            {
+                // Expected
+            }
+        }
+
+        [TestMethod]
+        public void DeleteMember_Null_ThrowsArgumentNullException()
+        {
+            var service = new MemberService(() => new MemberCrudDbContext(new DbContextOptionsBuilder<MemberCrudDbContext>().UseInMemoryDatabase("test").Options));
+            try
+            {
+                service.DeleteMember(null!);
+                Assert.Fail("Expected ArgumentNullException");
+            }
+            catch (ArgumentNullException)
+            {
+                // Expected
+            }
         }
     }
 }
