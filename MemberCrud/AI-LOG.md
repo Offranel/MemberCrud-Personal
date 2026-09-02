@@ -58,3 +58,34 @@ I reviewed the generated code and verified that the hard-coded fallback was remo
 I also verified that appsettings.json contains the MemberCrud connection string and is configured to be copied to the application output directory.
 
 The project was built and the application was tested after the change.
+
+## Entry 3 - Introduce IMemberService and Dependency Injection
+
+### Goal
+Remediate Findings #5 and #14 by reducing coupling between the WinForms forms and MemberService.
+
+### Prompt
+I asked GitHub Copilot to introduce an IMemberService abstraction and use constructor injection while preserving the existing application flow, CRUD functionality, database schema, and unit tests.
+
+### Response
+Copilot initially proposed creating MemberService directly inside the forms through forwarding constructors. I reviewed this solution and determined that it did not fully resolve the Dependency Inversion issue.
+
+I asked Copilot to revise the design. The final solution creates MemberService in Program.cs and passes the same IMemberService instance through ChurchManagement to MemberManagement, AddMember, and EditMember.
+
+### Action
+Modified and accepted.
+
+I rejected the initial implementation plan because the forms would still directly instantiate MemberService. I accepted the revised design after verifying that the concrete service is created only in Program.cs.
+
+### Verification
+The solution built successfully after the dependency injection refactor.
+
+During testing, an EF Core version mismatch was discovered. The main project used EF Core 10.0.10 while the test project used Microsoft.EntityFrameworkCore.InMemory 8.0.0.
+
+After updating the test package to 10.0.10:
+- 22 tests were executed
+- 7 passed
+- 0 failed
+- 15 were skipped
+
+The available unit tests passed successfully after the package versions were aligned.
