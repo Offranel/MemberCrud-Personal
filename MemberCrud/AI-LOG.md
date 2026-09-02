@@ -138,3 +138,31 @@ Final test result:
 - 15 skipped
 
 I also reviewed AI recommendations before accepting them. Some recommendations were rejected, deferred, or corrected when they did not fully match the project.
+
+## Entry 6 – Improve MemberManagement User Interface
+
+### Goal
+Improve the visual design and readability of the MemberManagement form.
+
+### Prompt
+I asked GitHub Copilot to modernize the MemberManagement WinForms interface while keeping the existing CRUD functionality, database code, event handlers, and business logic unchanged.
+
+### AI Response
+Copilot created a reusable Theme class and applied professional colors and styling to MemberManagement. It added a custom blue header, improved the member list, and styled the Add, Edit, and Delete buttons.
+
+### Action
+I reviewed the first AI-generated design and noticed several visual problems. The member names and button text were difficult to read, the title was clipped, and the colors were not consistent.
+
+I asked Copilot to correct these problems several times. The final design uses a consistent sky-blue color for the header, Add button, and selected member row. The Edit button uses teal and the Delete button uses red.
+
+### Verification
+I ran the application and visually verified the MemberManagement form after each change.
+
+I confirmed that:
+- The full "Member Management" title is visible.
+- Member names are readable.
+- Add, Edit, and Delete buttons are clearly visible.
+- The selected member is highlighted in blue.
+- Existing CRUD functionality was preserved.
+- The project still builds successfully.
+- Existing unit tests still pass.
