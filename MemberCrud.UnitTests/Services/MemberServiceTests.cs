@@ -32,7 +32,7 @@ namespace MemberCrud.UnitTests.Services
                 City = "Testville",
                 PostalCode = "12345",
                 DateOfBirth = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
-                CreatedAt = DateTime.UtcNow
+                CreateAt = DateTime.UtcNow
             };
 
             service.AddMember(member);
@@ -63,7 +63,7 @@ namespace MemberCrud.UnitTests.Services
                 City = "Testville",
                 PostalCode = "54321",
                 DateOfBirth = DateOnly.FromDateTime(DateTime.Today.AddYears(-25)),
-                CreatedAt = DateTime.UtcNow
+                CreateAt = DateTime.UtcNow
             };
 
             service.AddMember(member);
@@ -98,7 +98,7 @@ namespace MemberCrud.UnitTests.Services
                 City = "Testville",
                 PostalCode = "00000",
                 DateOfBirth = DateOnly.FromDateTime(DateTime.Today.AddYears(-40)),
-                CreatedAt = DateTime.UtcNow
+                CreateAt = DateTime.UtcNow
             };
 
             service.AddMember(member);
