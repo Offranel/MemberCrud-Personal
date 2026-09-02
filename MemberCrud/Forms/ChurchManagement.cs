@@ -1,3 +1,5 @@
+using MemberCrud.Services;
+
 namespace MemberCrud;
 
 /// <summary>
@@ -8,12 +10,23 @@ namespace MemberCrud;
 /// </summary>
 public partial class ChurchManagement : Form
 {
+    private readonly IMemberService _memberService = null!;
+
     /// <summary>
-    /// Initializes the ChurchManagement form and its UI components.
+    /// Parameterless constructor required by the WinForms designer.
+    /// Do not perform service-dependent wiring here.
     /// </summary>
     public ChurchManagement()
     {
         InitializeComponent();
+    }
+
+    /// <summary>
+    /// Main constructor used at runtime to provide services.
+    /// </summary>
+    public ChurchManagement(IMemberService memberService) : this()
+    {
+        _memberService = memberService ?? throw new System.ArgumentNullException(nameof(memberService));
     }
 
     /// <summary>
@@ -35,8 +48,8 @@ public partial class ChurchManagement : Form
     /// <param name="e">Event arguments.</param>
     private void MemberManagementBtn_Click(object sender, EventArgs e)
     {
-        // Instantiate and display the MemberManagement window.
-        MemberManagement memberManagement = new MemberManagement();
+        // Instantiate and display the MemberManagement window, forwarding the shared service.
+        MemberManagement memberManagement = new MemberManagement(_memberService);
         memberManagement.Show();
     }
 }

@@ -21,21 +21,23 @@ namespace MemberCrud
     /// </summary>
     public partial class MemberManagement : Form
     {
-        
-        private readonly MemberService _memberService =
-            new MemberService();
+        private readonly IMemberService _memberService = null!;
 
-        
+        // Designer constructor
         public MemberManagement()
         {
             InitializeComponent();
+        }
 
-            
+        // Runtime constructor - provide the IMemberService instance here
+        public MemberManagement(IMemberService memberService) : this()
+        {
+            _memberService = memberService ?? throw new ArgumentNullException(nameof(memberService));
+
             AddMemberBtn.Click += AddMemberBtn_Click;
             EditMemberBtn.Click += EditMemberBtn_Click;
             DeleteMemberBtn.Click += DeleteMemberBtn_Click;
 
-            
             LoadMembers();
         }
 
@@ -59,7 +61,7 @@ namespace MemberCrud
         private void AddMemberBtn_Click(object? sender, EventArgs e)
         {
             
-            AddMember addMemberForm = new AddMember();
+            AddMember addMemberForm = new AddMember(_memberService);
 
             addMemberForm.ShowDialog();
 
@@ -84,7 +86,7 @@ namespace MemberCrud
 
             
             EditMember editMemberForm =
-                new EditMember(selectedMember);
+                new EditMember(selectedMember, _memberService);
 
             editMemberForm.ShowDialog();
 

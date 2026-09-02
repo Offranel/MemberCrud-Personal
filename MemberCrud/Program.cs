@@ -1,3 +1,5 @@
+using MemberCrud.Services;
+
 namespace MemberCrud
 {
     internal static class Program
@@ -11,7 +13,11 @@ namespace MemberCrud
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new ChurchManagement());
+
+            // Create the application-scoped service instances here (composition root)
+            IMemberService memberService = new MemberService();
+
+            Application.Run(new ChurchManagement(memberService));
         }
     }
 }

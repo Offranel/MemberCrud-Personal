@@ -15,7 +15,7 @@ namespace MemberCrud.Services;
 /// database logic. Forms can call these methods without needing to know
 /// how the data is stored or retrieved.
 /// </summary>
-public class MemberService
+public class MemberService : IMemberService
 {
     private readonly System.Func<MemberCrudDbContext> _contextFactory;
 
