@@ -1,5 +1,6 @@
 ﻿using MemberCrud.Data;
 using MemberCrud.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -68,6 +69,7 @@ public class MemberService : IMemberService
     /// </remarks>
     public void AddMember(Member member)
     {
+        if (member is null) throw new ArgumentNullException(nameof(member));
         // Creates a database context for this operation.
         using MemberCrudDbContext db = _contextFactory();
 
@@ -92,6 +94,7 @@ public class MemberService : IMemberService
     /// </remarks>
     public void DeleteMember(Member member)
     {
+        if (member is null) throw new ArgumentNullException(nameof(member));
         // Creates a database context for this operation.
         using MemberCrudDbContext db = _contextFactory();
 
@@ -104,6 +107,7 @@ public class MemberService : IMemberService
     }
     public void UpdateMember(Member member)
     {
+        if (member is null) throw new ArgumentNullException(nameof(member));
         // Creates a database context for this operation.
         using MemberCrudDbContext db = _contextFactory();
         // Marks the selected member as a record that should

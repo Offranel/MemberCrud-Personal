@@ -115,5 +115,50 @@ namespace MemberCrud.UnitTests.Services
             // internally and cannot be substituted with a test double.
             Assert.IsTrue(DateTime.UtcNow != default);
         }
+
+        [TestMethod]
+        public void AddMember_Null_ThrowsArgumentNullException()
+        {
+            var service = new MemberService(() => new MemberCrudDbContext(new DbContextOptionsBuilder<MemberCrudDbContext>().UseInMemoryDatabase("test").Options));
+            try
+            {
+                service.AddMember(null!);
+                Assert.Fail("Expected ArgumentNullException");
+            }
+            catch (ArgumentNullException)
+            {
+                // Expected
+            }
+        }
+
+        [TestMethod]
+        public void UpdateMember_Null_ThrowsArgumentNullException()
+        {
+            var service = new MemberService(() => new MemberCrudDbContext(new DbContextOptionsBuilder<MemberCrudDbContext>().UseInMemoryDatabase("test").Options));
+            try
+            {
+                service.UpdateMember(null!);
+                Assert.Fail("Expected ArgumentNullException");
+            }
+            catch (ArgumentNullException)
+            {
+                // Expected
+            }
+        }
+
+        [TestMethod]
+        public void DeleteMember_Null_ThrowsArgumentNullException()
+        {
+            var service = new MemberService(() => new MemberCrudDbContext(new DbContextOptionsBuilder<MemberCrudDbContext>().UseInMemoryDatabase("test").Options));
+            try
+            {
+                service.DeleteMember(null!);
+                Assert.Fail("Expected ArgumentNullException");
+            }
+            catch (ArgumentNullException)
+            {
+                // Expected
+            }
+        }
     }
 }
