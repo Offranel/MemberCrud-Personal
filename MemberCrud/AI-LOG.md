@@ -89,3 +89,27 @@ After updating the test package to 10.0.10:
 - 15 were skipped
 
 The available unit tests passed successfully after the package versions were aligned.
+
+## Entry 4 - Add MemberService Argument Validation
+
+### Goal
+Remediate Finding #7 by adding input validation to MemberService CRUD methods.
+
+### Prompt
+I asked GitHub Copilot to add null argument validation to AddMember, UpdateMember, and DeleteMember without changing method signatures, the database schema, or unrelated code.
+
+### Response
+Copilot added ArgumentNullException checks to the three CRUD methods and created three unit tests to verify the new behavior.
+
+### Action
+Accepted after reviewing the changes.
+
+### Verification
+The solution built successfully.
+
+25 tests were executed:
+- 10 passed
+- 0 failed
+- 15 skipped
+
+The new null validation tests passed and existing CRUD behavior remained unchanged.
