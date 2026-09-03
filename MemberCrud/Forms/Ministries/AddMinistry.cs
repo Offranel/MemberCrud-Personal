@@ -26,8 +26,16 @@ namespace MemberCrud
         {
             InitializeComponent();
 
+            // Apply theme and header
+            MemberCrud.UI.Theme.ApplyFormTheme(this);
+            MemberCrud.UI.Theme.AddHeader(this, "Add Ministry");
+
             SaveChangesBtn.Click += SaveChangesBtn_Click;
             CancelBtn.Click += CancelBtn_Click;
+
+            // Style buttons
+            MemberCrud.UI.Theme.StyleButton(SaveChangesBtn, MemberCrud.UI.ButtonStyleType.Primary);
+            MemberCrud.UI.Theme.StyleButton(CancelBtn, MemberCrud.UI.ButtonStyleType.Cancel);
         }
 
         /// <summary>

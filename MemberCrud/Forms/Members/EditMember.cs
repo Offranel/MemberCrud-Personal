@@ -124,6 +124,14 @@ namespace MemberCrud
 
             // Prevent the user from selecting a future birth date.
             dateTimePicker1.MaxDate = DateTime.Today;
+
+            // Apply theme and header
+            MemberCrud.UI.Theme.ApplyFormTheme(this);
+            MemberCrud.UI.Theme.AddHeader(this, "Edit Member");
+
+            // Style Save/Cancel buttons if present
+            MemberCrud.UI.Theme.StyleButton(SaveMemberBtn, MemberCrud.UI.ButtonStyleType.Primary);
+            MemberCrud.UI.Theme.StyleButton(CancelMemberBtn, MemberCrud.UI.ButtonStyleType.Cancel);
         }
 
         // Runtime constructor that accepts the member to edit and the service instance

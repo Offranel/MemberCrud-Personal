@@ -95,6 +95,10 @@ namespace MemberCrud
 
             // Prevent selecting a future birth date.
             DateOfBirthDtp.MaxDate = DateTime.Today;
+
+            // Style buttons
+            MemberCrud.UI.Theme.StyleButton(SaveNewMemberBtn, MemberCrud.UI.ButtonStyleType.Primary);
+            MemberCrud.UI.Theme.StyleButton(CancelMemberBtn, MemberCrud.UI.ButtonStyleType.Cancel);
         }
 
         /// <summary>

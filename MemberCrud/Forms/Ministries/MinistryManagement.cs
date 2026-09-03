@@ -13,6 +13,16 @@ namespace MemberCrud
         public MinistryManagement()
         {
             InitializeComponent();
+            // Apply shared theme and header
+            MemberCrud.UI.Theme.ApplyFormTheme(this);
+            MemberCrud.UI.Theme.AddHeader(this, "Ministry Management");
+
+            // Style controls
+            MemberCrud.UI.Theme.StyleListBox(MinistriesLsbx);
+            MemberCrud.UI.Theme.StyleButton(AddMinistryBtn, MemberCrud.UI.ButtonStyleType.Primary);
+            MemberCrud.UI.Theme.StyleButton(EditMinistryBtn, MemberCrud.UI.ButtonStyleType.Edit);
+            MemberCrud.UI.Theme.StyleButton(DeleteMinistryBtn, MemberCrud.UI.ButtonStyleType.Delete);
+
             LoadMinistries();
         }
 

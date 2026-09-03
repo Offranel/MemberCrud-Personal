@@ -22,6 +22,7 @@ namespace MemberCrud
     public partial class MemberManagement : Form
     {
         private readonly IMemberService _memberService = null!;
+        private Panel _headerPanel = null!;
 
         // Designer constructor
         [System.Runtime.InteropServices.DllImport("user32.dll")]
@@ -44,10 +45,11 @@ namespace MemberCrud
             this.FormBorderStyle = FormBorderStyle.None;
             var header = new Panel
             {
-                Height = 60,
+                Height = 68,
                 Dock = DockStyle.Top,
                 BackColor = MemberCrud.UI.Theme.PrimaryNavy
             };
+            _headerPanel = header;
 
             var title = new Label
             {
@@ -100,7 +102,37 @@ namespace MemberCrud
             closeBtn.MouseEnter += (s, e) => closeBtn.BackColor = MemberCrud.UI.Theme.Danger;
             closeBtn.MouseLeave += (s, e) => closeBtn.BackColor = Color.Transparent;
 
+            // Add maximize/restore button between minimize and close
+            var maximizeBtn = new Button
+            {
+                Text = "▢",
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.Transparent,
+                Width = 40,
+                Height = 36,
+                Dock = DockStyle.Right,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold)
+            };
+            maximizeBtn.FlatAppearance.BorderSize = 0;
+            maximizeBtn.Click += (s, e) =>
+            {
+                if (this.WindowState == FormWindowState.Normal)
+                {
+                    this.WindowState = FormWindowState.Maximized;
+                    maximizeBtn.Text = "❐";
+                }
+                else
+                {
+                    this.WindowState = FormWindowState.Normal;
+                    maximizeBtn.Text = "▢";
+                }
+            };
+            maximizeBtn.MouseEnter += (s, e) => maximizeBtn.BackColor = ControlPaint.Dark(MemberCrud.UI.Theme.PrimaryNavy);
+            maximizeBtn.MouseLeave += (s, e) => maximizeBtn.BackColor = Color.Transparent;
+
             headerButtons.Controls.Add(closeBtn);
+            headerButtons.Controls.Add(maximizeBtn);
             headerButtons.Controls.Add(minimizeBtn);
 
             header.Controls.Add(headerButtons);
@@ -122,6 +154,19 @@ namespace MemberCrud
             header.MouseDown += Header_MouseDown;
             title.MouseDown += Header_MouseDown;
 
+            // Reposition controls responsively when the form resizes
+            this.Resize += (s, e) => PositionButtons();
+
+            // Move the member list down a bit to create spacing under the header
+            try
+            {
+                AllMembersLsbx.Top += 34; // move down ~34 pixels total
+            }
+            catch
+            {
+                // ignore if control not present at design-time
+            }
+
             // Style controls used on this form
             MemberCrud.UI.Theme.StyleListBox(AllMembersLsbx);
             MemberCrud.UI.Theme.StyleButton(AddMemberBtn, MemberCrud.UI.ButtonStyleType.Primary);
@@ -139,7 +184,8 @@ namespace MemberCrud
 
             // preserve original left position to keep layout consistent
             int btnLeft = AddMemberBtn.Left;
-            int startTop = AddMemberBtn.Top;
+            // align buttons with the member list top
+            int startTop = AllMembersLsbx.Top;
 
             AddMemberBtn.AutoSize = false;
             EditMemberBtn.AutoSize = false;
@@ -152,6 +198,11 @@ namespace MemberCrud
             AddMemberBtn.Height = btnHeight;
             EditMemberBtn.Height = btnHeight;
             DeleteMemberBtn.Height = btnHeight;
+
+            // Ensure fonts and exact settings
+            AddMemberBtn.Font = MemberCrud.UI.Theme.ButtonFont;
+            EditMemberBtn.Font = MemberCrud.UI.Theme.ButtonFont;
+            DeleteMemberBtn.Font = MemberCrud.UI.Theme.ButtonFont;
 
             // position buttons vertically with 30px spacing
             AddMemberBtn.Left = btnLeft;
@@ -175,6 +226,86 @@ namespace MemberCrud
             AddMemberBtn.Text = "Add Member";
             EditMemberBtn.Text = "Edit Member";
             DeleteMemberBtn.Text = "Delete Member";
+
+            // Ensure no clipping: set width to at least desired width or measured text width
+            void EnsureButtonWidth(Button b, int desiredWidth)
+            {
+                if (b == null) return;
+                b.AutoSize = false;
+                b.AutoEllipsis = false;
+                b.UseVisualStyleBackColor = false;
+                var textSize = TextRenderer.MeasureText(b.Text, b.Font);
+                int measured = textSize.Width + 24; // padding
+                b.Width = Math.Max(desiredWidth, measured);
+                b.Height = btnHeight; // ensure exact height
+                b.Padding = new Padding(0);
+                b.TextAlign = ContentAlignment.MiddleCenter;
+                b.ForeColor = Color.White;
+            }
+
+            EnsureButtonWidth(AddMemberBtn, btnWidth);
+            EnsureButtonWidth(EditMemberBtn, btnWidth);
+            EnsureButtonWidth(DeleteMemberBtn, btnWidth);
+
+            // Final positioning based on current client size
+            PositionButtons();
+        }
+
+        private void PositionButtons()
+        {
+            try
+            {
+                if (AllMembersLsbx == null) return;
+
+                int btnWidth = Math.Max(180, AddMemberBtn.Width);
+                int btnHeight = AddMemberBtn.Height;
+                int spacing = 30;
+
+                // Compute left/right available area to the right of the listbox
+                int leftBound = AllMembersLsbx.Right + 40; // ensure gap from list
+                int rightBound = this.ClientSize.Width - 40; // right margin
+
+                int availableWidth = rightBound - leftBound;
+                int x;
+                if (availableWidth <= btnWidth)
+                {
+                    // Not enough room: position just to the right of the list
+                    x = Math.Max(leftBound, AllMembersLsbx.Right + 10);
+                }
+                else
+                {
+                    // Center the button group in the available right-side area
+                    x = leftBound + (availableWidth - btnWidth) / 2;
+                }
+
+                // Vertical centering: center the group in the area below the header
+                int headerHeight = (_headerPanel != null) ? _headerPanel.Height : 60;
+                int areaTop = headerHeight + 10;
+                int areaHeight = this.ClientSize.Height - headerHeight - 20;
+
+                int totalButtonsHeight = btnHeight * 3 + spacing * 2;
+                int y = areaTop + Math.Max(0, (areaHeight - totalButtonsHeight) / 2);
+
+                // Apply positions
+                AddMemberBtn.Left = x;
+                AddMemberBtn.Top = y;
+                AddMemberBtn.Width = btnWidth;
+                AddMemberBtn.Height = btnHeight;
+
+                EditMemberBtn.Left = x;
+                EditMemberBtn.Top = AddMemberBtn.Bottom + spacing;
+                EditMemberBtn.Width = btnWidth;
+                EditMemberBtn.Height = btnHeight;
+
+                DeleteMemberBtn.Left = x;
+                DeleteMemberBtn.Top = EditMemberBtn.Bottom + spacing;
+                DeleteMemberBtn.Width = btnWidth;
+                DeleteMemberBtn.Height = btnHeight;
+            }
+            catch
+            {
+                // ignore layout errors at design time
+            }
         }
 
         // Runtime constructor - provide the IMemberService instance here

@@ -18,7 +18,15 @@ public partial class ChurchManagement : Form
     /// </summary>
     public ChurchManagement()
     {
-        InitializeComponent();
+            InitializeComponent();
+
+            // Apply theme and header
+            MemberCrud.UI.Theme.ApplyFormTheme(this);
+            MemberCrud.UI.Theme.AddHeader(this, "Church Management");
+
+            // Style navigation buttons
+            MemberCrud.UI.Theme.StyleButton(MemberManagementBtn, MemberCrud.UI.ButtonStyleType.Primary);
+            MemberCrud.UI.Theme.StyleButton(MinistryManagemetBtn, MemberCrud.UI.ButtonStyleType.Secondary);
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace MemberCrud.UI
@@ -9,12 +10,9 @@ namespace MemberCrud.UI
     public static class Theme
     {
         // Palette
-        // Slightly adjusted form background per design
         public static readonly Color Background = ColorTranslator.FromHtml("#F3F7FC");
         public static readonly Color CardBackground = ColorTranslator.FromHtml("#FFFFFF");
-        // Header color changed to a lighter sky/highlight blue per design
         public static readonly Color PrimaryNavy = ColorTranslator.FromHtml("#4DA3FF");
-        // Use the same sky blue as the primary accent throughout the UI
         public static readonly Color Accent = PrimaryNavy;
         public static readonly Color AccentSecondary = ColorTranslator.FromHtml("#17A2B8");
         public static readonly Color TextPrimary = ColorTranslator.FromHtml("#212529");
@@ -26,8 +24,14 @@ namespace MemberCrud.UI
         // Fonts
         public static readonly Font FormFont = new Font("Segoe UI", 10F, FontStyle.Regular);
         public static readonly Font HeaderFont = new Font("Segoe UI", 16F, FontStyle.Bold);
-        // Use 10.5pt for clearer button text per design spec
         public static readonly Font ButtonFont = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+
+        // Native methods for dragging
+        [DllImport("user32.dll")]
+        private static extern bool ReleaseCapture();
+
+        [DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
         public static void ApplyFormTheme(Form form)
         {
@@ -47,13 +51,133 @@ namespace MemberCrud.UI
             }
         }
 
+        /// <summary>
+        /// Adds a standard application header to the specified form with title and window controls.
+        /// Returns the header panel so callers can reference its height if needed.
+        /// </summary>
+        public static Panel AddHeader(Form form, string titleText)
+        {
+            if (form == null) throw new ArgumentNullException(nameof(form));
+
+            form.FormBorderStyle = FormBorderStyle.None;
+
+            var header = new Panel
+            {
+                Height = 68,
+                Dock = DockStyle.Top,
+                BackColor = PrimaryNavy
+            };
+
+            var title = new Label
+            {
+                Text = titleText,
+                ForeColor = Color.White,
+                Font = HeaderFont,
+                AutoSize = false,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Dock = DockStyle.Fill,
+                Padding = new Padding(20, 0, 0, 0)
+            };
+
+            var headerButtons = new Panel
+            {
+                Dock = DockStyle.Right,
+                Width = 120,
+                BackColor = Color.Transparent
+            };
+
+            var minimizeBtn = new Button
+            {
+                Text = "_",
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.Transparent,
+                Width = 40,
+                Height = 36,
+                Dock = DockStyle.Right,
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold)
+            };
+            minimizeBtn.FlatAppearance.BorderSize = 0;
+            minimizeBtn.Click += (s, e) => form.WindowState = FormWindowState.Minimized;
+            minimizeBtn.MouseEnter += (s, e) => minimizeBtn.BackColor = ControlPaint.Dark(PrimaryNavy);
+            minimizeBtn.MouseLeave += (s, e) => minimizeBtn.BackColor = Color.Transparent;
+
+            var maximizeBtn = new Button
+            {
+                Text = "▢",
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.Transparent,
+                Width = 40,
+                Height = 36,
+                Dock = DockStyle.Right,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold)
+            };
+            maximizeBtn.FlatAppearance.BorderSize = 0;
+            maximizeBtn.Click += (s, e) =>
+            {
+                if (form.WindowState == FormWindowState.Normal)
+                {
+                    form.WindowState = FormWindowState.Maximized;
+                    maximizeBtn.Text = "❐";
+                }
+                else
+                {
+                    form.WindowState = FormWindowState.Normal;
+                    maximizeBtn.Text = "▢";
+                }
+            };
+            maximizeBtn.MouseEnter += (s, e) => maximizeBtn.BackColor = ControlPaint.Dark(PrimaryNavy);
+            maximizeBtn.MouseLeave += (s, e) => maximizeBtn.BackColor = Color.Transparent;
+
+            var closeBtn = new Button
+            {
+                Text = "X",
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                BackColor = Color.Transparent,
+                Width = 40,
+                Height = 36,
+                Dock = DockStyle.Right,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold)
+            };
+            closeBtn.FlatAppearance.BorderSize = 0;
+            closeBtn.Click += (s, e) => form.Close();
+            closeBtn.MouseEnter += (s, e) => closeBtn.BackColor = Danger;
+            closeBtn.MouseLeave += (s, e) => closeBtn.BackColor = Color.Transparent;
+
+            headerButtons.Controls.Add(closeBtn);
+            headerButtons.Controls.Add(maximizeBtn);
+            headerButtons.Controls.Add(minimizeBtn);
+
+            header.Controls.Add(headerButtons);
+            header.Controls.Add(title);
+
+            form.Controls.Add(header);
+
+            // enable dragging the form by the header
+            void Header_MouseDown(object? s, MouseEventArgs e)
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    ReleaseCapture();
+                    SendMessage(form.Handle, 0xA1, 0x2, 0);
+                }
+            }
+
+            header.MouseDown += Header_MouseDown;
+            title.MouseDown += Header_MouseDown;
+
+            return header;
+        }
+
         public static void StyleButton(Button btn, ButtonStyleType style)
         {
             if (btn == null) return;
             btn.FlatStyle = FlatStyle.Flat;
             btn.FlatAppearance.BorderSize = 0;
             btn.Font = ButtonFont;
-            btn.Height = 44;
+            btn.Height = 46;
             btn.Padding = new Padding(0);
             btn.AutoSize = false;
             btn.AutoEllipsis = false;

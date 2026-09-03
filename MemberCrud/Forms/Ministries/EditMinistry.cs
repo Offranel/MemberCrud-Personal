@@ -47,6 +47,10 @@ namespace MemberCrud
             _initialMinistryId = id;
 
             // Wire up events
+            // Apply theme and header
+            MemberCrud.UI.Theme.ApplyFormTheme(this);
+            MemberCrud.UI.Theme.AddHeader(this, "Edit Ministry");
+
             Load += EditMinistry_Load;
             MinistriesLsBx.SelectedIndexChanged += MinistriesLsBx_SelectedIndexChanged;
             AddMemberToMinistryBtn.Click += AddMemberToMinistryBtn_Click;
